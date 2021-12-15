@@ -1,11 +1,11 @@
 # start from base
 FROM ubuntu:18.04
 
-LABEL maintainer="Prakhar Srivastav <prakhar@prakhar.me>"
+LABEL maintainer="Lionel KITIHOUN <kitihounel@gmail.com>"
 
 # install system-wide deps for python and node
-RUN apt-get -yqq update
-RUN apt-get -yqq install python3-pip python3-dev curl gnupg
+RUN apt-get -qq update
+RUN apt-get -qq install python3-pip python3-dev curl gnupg
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash
 RUN apt-get install -yq nodejs
 

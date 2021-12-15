@@ -16,21 +16,20 @@ def load_data_in_es():
     data = r.json()
     print("Loading data in elasticsearch ...")
     for id, truck in enumerate(data):
-        res = es.index(index="sfdata", doc_type="truck", id=id, body=truck)
+        es.index(index="sfdata", doc_type="truck", id=id, body=truck)
     print("Total trucks loaded: ", len(data))
 
 def safe_check_index(index, retry=3):
     """ connect to ES with retry """
-    if not retry:
+    for _ in range(retry):
+        time.sleep(20)
+        try:
+            return es.indices.exists(index)
+        except exceptions.ConnectionError as e:
+            print("Unable to connect to ES. Retrying in 20 secs...")
+    else:
         print("Out of retries. Bailing out...")
         sys.exit(1)
-    try:
-        status = es.indices.exists(index)
-        return status
-    except exceptions.ConnectionError as e:
-        print("Unable to connect to ES. Retrying in 5 secs...")
-        time.sleep(5)
-        safe_check_index(index, retry-1)
 
 def format_fooditems(string):
     items = [x.strip().lower() for x in string.split(":")]
